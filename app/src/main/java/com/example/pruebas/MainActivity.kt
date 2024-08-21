@@ -1,9 +1,11 @@
 package com.example.pruebas
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
@@ -41,9 +44,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             PruebasTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize().semantics {
-                        testTagsAsResourceId = true
-                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .semantics {
+                            testTagsAsResourceId = true
+                        },
                     color = MaterialTheme.colorScheme.background
                 ) {
                     LoginScreen()
@@ -58,6 +63,7 @@ fun LoginScreen() {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var loginMessage by remember { mutableStateOf("") } // State to hold login message
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -74,7 +80,9 @@ fun LoginScreen() {
             value = username,
             onValueChange = { username = it },
             label = { Text("Username") },
-            modifier = Modifier.fillMaxWidth().testTag("UsernameField") // Asigna un testTag
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("UsernameField") // Asigna un testTag
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -84,7 +92,9 @@ fun LoginScreen() {
             onValueChange = { password = it },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth().testTag("PasswordField") // Asigna un testTag
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("PasswordField") // Asigna un testTag
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -98,10 +108,23 @@ fun LoginScreen() {
                     loginMessage = "Invalid username or password" // Failure message
                 }
             },
-            modifier = Modifier.fillMaxWidth().testTag("LoginButton")
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("loginButton")
         ) {
             Text(text = "Login")
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(text = "Create account", style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.clickable {
+                // Navegar a LoginActivity usando un Intent
+
+                val intent = Intent(context, RegisterForm::class.java)
+                context.startActivity(intent)
+            }
+            )
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -111,7 +134,9 @@ fun LoginScreen() {
                 text = loginMessage,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.fillMaxWidth().testTag("outputTextField")
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("outputTextField")
             )
         }
     }
